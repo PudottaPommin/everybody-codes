@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="EC24 - Q02" type="ZIGBRAINS_BUILD" factoryName="ZIGBRAINS_BUILD">
+    <ZigBrainsOption name="workingDirectory" value="P:\_miscelanous\everybody-codes" />
+    <envs />
+    <ZigBrainsOption name="buildSteps" value="ec2024-q02 -Doptimize=fast" />
+    <ZigBrainsOption name="debugBuildSteps" value="" />
+    <ZigBrainsOption name="debugCompilerArgs" value="" />
+    <ZigBrainsOption name="exePath" value="" />
+    <ZigBrainsOption name="exeArgs" value="" />
+    <method v="2" />
+  </configuration>
+</component>

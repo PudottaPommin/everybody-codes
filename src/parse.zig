@@ -1,7 +1,7 @@
 const std = @import("std");
 
-pub fn lines(text: []const u8) std.mem.SplitIterator(u8, .scalar) {
-    return std.mem.splitScalar(u8, text, '\n');
+pub fn lines(text: []const u8) std.mem.TokenIterator(u8, .scalar) {
+    return std.mem.tokenizeScalar(u8, text, '\n');
 }
 
 /// Extracts every (optionally negative) integer from arbitrary text.

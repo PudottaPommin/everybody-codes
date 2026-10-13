@@ -19,7 +19,10 @@ pub fn main(init: std.process.Init) !void {
     inline for (.{ 1, 2, 3 }) |part| {
         const name = std.fmt.comptimePrint("part{d}", .{part});
         if (@hasDecl(problem, name)) {
-            if (only == null or only.? == part) try runPart(arena, io, out, part, @field(problem, name));
+            if (only == null or only.? == part) {
+                try runPart(arena, io, out, part, @field(problem, name));
+                _ = arena.reset(.retain_capacity);
+            }
         }
     }
 }

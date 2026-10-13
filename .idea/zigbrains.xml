@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ZigToolchain" toolchain="4693181a-f281-47ee-a572-b707efdc36ff" />
+  <component name="Formatter" smartIndentMaxFileSizeKb="256" />
+  <component name="ZigToolchain" toolchain="04055094-e4c8-4544-bdc1-dffdf22c3daf" />
 </project>

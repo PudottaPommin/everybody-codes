@@ -28,26 +28,27 @@ const Enemies = enum {
             .Dragonfly => 5,
         };
     }
+
+    fn potionCost(c: u8) !?u8 {
+        return switch (c) {
+            'x' => null,
+            'A' => 0,
+            'B' => 1,
+            'C' => 3,
+            'D' => 5,
+            else => error.InvalidEnemy,
+        };
+    }
 };
 
-pub fn part1(alloc: std.mem.Allocator, input: []const u8) !u64 {
-    _ = alloc;
-    var total: u64 = 0;
-    for (input) |c| {
-        if (try Enemies.fromChar(c)) |e| total += e.required_potions();
-    }
-    return total;
-}
-
-pub fn part2(alloc: std.mem.Allocator, input: []const u8) !u64 {
-    _ = alloc;
+fn solve(comptime chunk_size: usize, input: []const u8) !u64 {
     var total: u64 = 0;
     var i: usize = 0;
-    while (i + 1 < input.len) : (i += 2) {
+    while (i + chunk_size <= input.len) : (i += chunk_size) {
         var n: u8 = 0;
-        for (input[i..(i + 2)]) |ch| {
-            if (try Enemies.fromChar(ch)) |e| {
-                total += e.required_potions();
+        for (input[i..][0..chunk_size]) |ch| {
+            if (try Enemies.potionCost(ch)) |cost| {
+                total += cost;
                 n += 1;
             }
         }
@@ -56,21 +57,16 @@ pub fn part2(alloc: std.mem.Allocator, input: []const u8) !u64 {
     return total;
 }
 
-pub fn part3(alloc: std.mem.Allocator, input: []const u8) !u64 {
-    _ = alloc;
-    var total: u64 = 0;
-    var i: usize = 0;
-    while (i + 2 < input.len) : (i += 3) {
-        var n: u8 = 0;
-        for (input[i..][0..3]) |ch| {
-            if (try Enemies.fromChar(ch)) |e| {
-                total += e.required_potions();
-                n += 1;
-            }
-        }
-        if (n > 1) total += n * (n - 1);
-    }
-    return total;
+pub fn part1(_: std.mem.Allocator, input: []const u8) !u64 {
+    return solve(1, input);
+}
+
+pub fn part2(_: std.mem.Allocator, input: []const u8) !u64 {
+    return solve(2, input);
+}
+
+pub fn part3(_: std.mem.Allocator, input: []const u8) !u64 {
+    return solve(3, input);
 }
 
 test "part1-test" {

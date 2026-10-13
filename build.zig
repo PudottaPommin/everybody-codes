@@ -1,6 +1,6 @@
 const std = @import("std");
 
-pub fn build(b: *std.Build) !void {
+pub fn build(b: *std.Build) !void { // $ls root_id 4
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
@@ -15,13 +15,17 @@ pub fn build(b: *std.Build) !void {
 
     const io = b.graph.io;
 
-    var dir = try std.Io.Dir.cwd().openDir(io, "problems", .{ .iterate = true });
+    var dir = try b.root.root_dir.handle.openDir(io, "problems", .{ .iterate = true });
     defer dir.close(io);
 
     var walker = try dir.walk(b.allocator);
     defer walker.deinit();
 
     while (try walker.next(io)) |entry| {
+        if (entry.kind == .directory) {
+            b.dependOnDirectoryContents(b.path(b.fmt("problems/{s}", .{entry.path})));
+            continue;
+        }
         if (entry.kind != .file or !std.mem.endsWith(u8, entry.basename, ".zig")) continue;
 
         // "ec2025\q01.zig" (Windows) or "ec2025/q01.zig" -> id "ec2025/q01", step "ec2025-q01"
@@ -30,7 +34,7 @@ pub fn build(b: *std.Build) !void {
         const step_name = try b.allocator.dupe(u8, id);
         std.mem.replaceScalar(u8, step_name, '/', '-');
 
-        const problem = b.createModule(.{
+        const problem = b.addModule(step_name, .{
             .root_source_file = b.path(b.fmt("problems/{s}.zig", .{id})),
             .target = target,
             .optimize = optimize,
