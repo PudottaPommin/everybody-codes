@@ -1,6 +1,2 @@
-.zig-cache/
-zig-out/
-zig-pkg/
-*.o
-
-inputs/
+/target
+/inputs
