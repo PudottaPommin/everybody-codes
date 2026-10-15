@@ -1,4 +1,5 @@
-use crate::ec_solver::{Part, Solver, lines};
+use crate::internal::lines;
+use crate::{Part, Solver};
 
 pub struct Q02;
 

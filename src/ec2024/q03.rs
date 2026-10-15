@@ -1,5 +1,4 @@
-use crate::ec_solver::{Part, Solver, lines};
-use crate::grid::{Grid, Pos};
+use crate::internal::{Part, Solver, grid::*, lines};
 
 pub struct Q03;
 

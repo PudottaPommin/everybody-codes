@@ -1,10 +1,10 @@
-mod ec2024;
-mod ec_solver;
-pub mod grid;
+extern crate core;
 
-use crate::ec_solver::Solver;
+use crate::internal::ec_solver::{Part, Solver, input_path};
 use clap::Parser;
-use ec_solver::{Part, input_path};
+
+mod ec2024;
+mod internal;
 
 /// Run Everybody Codes solvers.
 #[derive(Parser)]
@@ -41,5 +41,5 @@ fn main() {
 
 /// The one place you touch when adding a new quest.
 pub fn solver_for(year: u16, quest: u8) -> Option<Box<dyn Solver>> {
-    crate::ec2024::solver_for(year, quest)
+    ec2024::solver_for(year, quest)
 }
