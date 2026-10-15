@@ -86,6 +86,17 @@ pub fn lines(input: &[u8]) -> impl Iterator<Item = &[u8]> {
         .filter(|l| !l.is_empty())
 }
 
+/// Splits a line on anything that isn't part of a number, then parses each token.
+pub fn parse_numbers<T: std::str::FromStr>(line: &[u8]) -> impl Iterator<Item = T> {
+    line.split(|&b| !(b.is_ascii_digit() || b == b'-' || b == b'.'))
+        .filter(|t| !t.is_empty())
+        .map(|t| {
+            let s = std::str::from_utf8(t).unwrap(); // only ASCII bytes by construction
+            s.parse::<T>()
+                .unwrap_or_else(|_| panic!("cannot parse token {s:?}"))
+        })
+}
+
 pub fn input_path(year: u16, quest: u8, part: Part) -> String {
     format!("inputs/ec{year}/q{quest:02}/{}.txt", part as u8)
 }

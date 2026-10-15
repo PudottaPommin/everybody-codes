@@ -90,6 +90,33 @@ pub const fn lcm(a: usize, b: usize) -> usize {
     }
 }
 
+pub fn transpose<T, R, Row, Out>(m: impl IntoIterator<Item = R>) -> Out
+where
+    R: IntoIterator<Item = T>,
+    Row: FromIterator<T>,
+    Out: FromIterator<Row>,
+{
+    let mut iters: Vec<R::IntoIter> = m.into_iter().map(IntoIterator::into_iter).collect();
+    let mut cols: Vec<Row> = Vec::new();
+
+    if !iters.is_empty() {
+        'outer: loop {
+            let mut col = Vec::with_capacity(iters.len());
+            for it in &mut iters {
+                match it.next() {
+                    Some(v) => col.push(v),
+                    None => {
+                        assert!(col.is_empty(), "ragged matrix");
+                        break 'outer;
+                    }
+                }
+            }
+            cols.push(col.into_iter().collect());
+        }
+    }
+    cols.into_iter().collect()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
