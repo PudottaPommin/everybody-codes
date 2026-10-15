@@ -1,3 +1,6 @@
 [alias]
 ec = "run --"
 ecr = "run --release --"
+all = "run -- --all"
+allr = "run --release -- --all"
+scaffold = "run -- new"

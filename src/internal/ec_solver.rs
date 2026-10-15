@@ -23,14 +23,43 @@ impl Part {
 }
 
 pub trait Solver {
-    fn solve_from_input(&self, part: Part, input: &[u8]) -> String;
+    fn part1(&self, _input: &[u8]) -> String {
+        String::from("<unsolved>")
+    }
 
-    fn solve_from_path(&self, part: Part, input_path: &str) {
-        let input =
-            read_input(input_path).unwrap_or_else(|e| panic!("failed to read {input_path}: {e}"));
+    fn part2(&self, _input: &[u8]) -> String {
+        String::from("<unsolved>")
+    }
+
+    fn part3(&self, _input: &[u8]) -> String {
+        String::from("<unsolved>")
+    }
+
+    fn solve_from_input(&self, part: Part, input: &[u8]) -> String {
+        match part {
+            Part::One => self.part1(input),
+            Part::Two => self.part2(input),
+            Part::Three => self.part3(input),
+        }
+    }
+
+    fn solve_from_path(
+        &self,
+        part: Part,
+        input_path: &str,
+    ) -> Option<(String, std::time::Duration)> {
+        let input = match read_input(input_path) {
+            Ok(bytes) => bytes,
+            Err(e) => {
+                eprintln!("[P{part:}]: skipped ('{input_path}': {e})");
+                return None;
+            }
+        };
         let start = std::time::Instant::now();
         let answer = self.solve_from_input(part, &input);
-        println!("[P{part:}]: {answer} in {:?}", start.elapsed());
+        let elapsed = start.elapsed();
+        println!("[P{part:}]: {answer} in {:?}", elapsed);
+        Some((answer, elapsed))
     }
 
     fn solve_from_paths(&self, input_paths: &[&str]) {

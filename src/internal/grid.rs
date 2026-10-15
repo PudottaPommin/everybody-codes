@@ -22,6 +22,10 @@ impl Pos {
         let new_y = self.y.checked_add_signed(y)?;
         Some(Self::new(new_x, new_y))
     }
+
+    pub fn manhattan_distance(&self, other: &Pos) -> usize {
+        self.x.abs_diff(other.x) + self.y.abs_diff(other.y)
+    }
 }
 
 #[derive(Clone, PartialEq, Eq)]
@@ -158,6 +162,28 @@ impl<T> Grid<T> {
     pub fn dimensions(&self) -> (usize, usize) {
         (self.width, self.height)
     }
+
+    /// Returns orthogonal neighbors within bounds (Up, Down, Right, Left).
+    pub fn neighbors4(&self, p: Pos) -> impl Iterator<Item = (Pos, &T)> {
+        self.filter_neighbours(Pos::CROSS_MATRIX.into_iter(), p)
+    }
+
+    /// Returns all 8 neighbors within bounds (orthogonal and diagonal).
+    pub fn neighbors8(&self, p: Pos) -> impl Iterator<Item = (Pos, &T)> {
+        self.filter_neighbours(Pos::CROSS_MATRIX.into_iter().chain(Pos::DIAGONAL_MATRIX), p)
+    }
+
+    fn filter_neighbours(
+        &self,
+        iter: impl Iterator<Item = (isize, isize)>,
+        p: Pos,
+    ) -> impl Iterator<Item = (Pos, &T)> {
+        iter.filter_map(move |(dx, dy)| {
+            let neighbor_pos = p.new_relative(dx, dy)?;
+            let cell = self.get(neighbor_pos)?;
+            Some((neighbor_pos, cell))
+        })
+    }
 }
 
 impl<T: Clone> Grid<T> {
@@ -233,5 +259,51 @@ impl<T: fmt::Debug> fmt::Debug for Grid<T> {
             writeln!(f, "{row:?}")?;
         }
         Ok(())
+    }
+}
+
+impl Grid<u8> {
+    /// Formats the byte grid as an ASCII string with newlines.
+    pub fn display_ascii(&self) -> String {
+        let mut s = String::with_capacity((self.width + 1) * self.height);
+        for row in self.rows() {
+            for &b in row {
+                s.push(b as char);
+            }
+            s.push('\n');
+        }
+        s
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_pos_manhattan_distance() {
+        let p1 = Pos::new(2, 3);
+        let p2 = Pos::new(5, 7);
+        assert_eq!(p1.manhattan_distance(&p2), 3 + 4);
+        assert_eq!(p2.manhattan_distance(&p1), 7);
+    }
+
+    #[test]
+    fn test_grid_neighbors() {
+        let grid = Grid::new(3, 3, 0);
+        let center = Pos::new(1, 1);
+        assert_eq!(grid.neighbors4(center).count(), 4);
+        assert_eq!(grid.neighbors8(center).count(), 8);
+
+        let corner = Pos::new(0, 0);
+        assert_eq!(grid.neighbors4(corner).count(), 2);
+        assert_eq!(grid.neighbors8(corner).count(), 3);
+    }
+
+    #[test]
+    fn test_grid_display_ascii() {
+        let rows = vec![b"###".to_vec(), b"#.#".to_vec(), b"###".to_vec()];
+        let grid = Grid::from_rows(rows);
+        assert_eq!(grid.display_ascii(), "###\n#.#\n###\n");
     }
 }
