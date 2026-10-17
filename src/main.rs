@@ -1,3 +1,4 @@
+#![feature(string_into_chars)]
 extern crate core;
 
 use crate::internal::ec_solver::{Part, Solver, input_path};

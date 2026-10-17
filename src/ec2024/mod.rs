@@ -5,11 +5,12 @@ mod q02;
 mod q03;
 mod q04;
 mod q05;
+mod q06;
 
 pub const YEAR: u16 = 2024;
 
 pub fn available_quests() -> &'static [u8] {
-    &[1, 2, 3, 4, 5]
+    &[1, 2, 3, 4, 5, 6]
 }
 
 pub fn solver_for(year: u16, quest: u8) -> Option<Box<dyn Solver>> {
@@ -22,6 +23,7 @@ pub fn solver_for(year: u16, quest: u8) -> Option<Box<dyn Solver>> {
         3 => Some(Box::new(q03::Q03)),
         4 => Some(Box::new(q04::Q04)),
                 5 => Some(Box::new(q05::Q05)),
+                6 => Some(Box::new(q06::Q06)),
         _ => None,
     }
 }
