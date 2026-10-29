@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ec_q_t" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
     <option name="buildProfileId" value="test" />
-    <option name="command" value="test --package everybody-codes  --profile test ec2024::q06::tests::test_part2::case_1" />
+    <option name="command" value="test --package everybody-codes  --profile test ec2026::q01::tests::test_part3::case_1" />
     <option name="workingDirectory" value="file://$PROJECT_DIR$" />
     <envs>
       <env name="RUST_LOG" value="debug" />
