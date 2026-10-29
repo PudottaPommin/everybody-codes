@@ -1,6 +1,10 @@
 use crate::internal::lines;
 use crate::{Part, Solver};
 
+const INPUT_P1: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/inputs/ec2024/q02/1.txt"));
+const INPUT_P2: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/inputs/ec2024/q02/2.txt"));
+const INPUT_P3: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/inputs/ec2024/q02/3.txt"));
+
 pub struct Q02;
 
 impl Q02 {
@@ -105,11 +109,18 @@ impl Q02 {
 }
 
 impl Solver for Q02 {
-    fn solve_from_input(&self, part: Part, input: &[u8]) -> String {
+    fn input(&self, part: Part) -> Option<&'static str> {
         match part {
-            Part::One => Self::part1(input).to_string(),
-            Part::Two => Self::part2(input).to_string(),
-            Part::Three => Self::part3(input).to_string(),
+            Part::One => Some(INPUT_P1),
+            Part::Two => Some(INPUT_P2),
+            Part::Three => Some(INPUT_P3),
+        }
+    }
+    fn solve_from_input(&self, part: Part, input: &str) -> String {
+        match part {
+            Part::One => Self::part1(input.as_bytes()).to_string(),
+            Part::Two => Self::part2(input.as_bytes()).to_string(),
+            Part::Three => Self::part3(input.as_bytes()).to_string(),
         }
     }
 }

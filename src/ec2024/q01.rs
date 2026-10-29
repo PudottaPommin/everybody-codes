@@ -1,10 +1,15 @@
 use crate::{Part, Solver};
 
+const INPUT_P1: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/inputs/ec2024/q01/1.txt"));
+const INPUT_P2: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/inputs/ec2024/q01/2.txt"));
+const INPUT_P3: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/inputs/ec2024/q01/3.txt"));
+
 pub struct Q01;
 
 impl Q01 {
-    fn count_enemies(chunk_size: usize, input: &[u8]) -> usize {
+    fn count_enemies(chunk_size: usize, input: &str) -> usize {
         input
+            .as_bytes()
             .chunks(chunk_size)
             .map(|chunk| {
                 let (n, sum) = chunk
@@ -21,7 +26,14 @@ impl Q01 {
 }
 
 impl Solver for Q01 {
-    fn solve_from_input(&self, part: Part, input: &[u8]) -> String {
+    fn input(&self, part: Part) -> Option<&'static str> {
+        match part {
+            Part::One => Some(INPUT_P1),
+            Part::Two => Some(INPUT_P2),
+            Part::Three => Some(INPUT_P3),
+        }
+    }
+    fn solve_from_input(&self, part: Part, input: &str) -> String {
         let chunk_size = match part {
             Part::One => 1,
             Part::Two => 2,
@@ -73,7 +85,7 @@ mod tests {
     #[case(2, 28, "AxBCDDCAxD")]
     #[case(3, 30, "xBxAAABCDxCC")]
     fn part1(#[case] chunk_size: usize, #[case] expected: usize, #[case] input: &str) {
-        let result = Q01::count_enemies(chunk_size, input.as_bytes());
+        let result = Q01::count_enemies(chunk_size, input);
         assert_eq!(result, expected);
     }
 }

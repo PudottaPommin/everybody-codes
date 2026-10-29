@@ -1,16 +1,15 @@
-#![feature(string_into_chars)]
 extern crate core;
 
 use crate::internal::ec_solver::{Part, Solver, input_path};
 use clap::{Parser, Subcommand};
-use std::time::Instant;
 
 mod ec2024;
+mod ec2026;
 #[allow(dead_code)]
 mod internal;
 mod scaffold;
 
-const DEFAULT_YEAR: u16 = 2024;
+const DEFAULT_YEAR: u16 = 2026;
 
 /// Run Everybody Codes solvers.
 #[derive(Parser)]
@@ -112,11 +111,23 @@ fn main() {
 
     let mut total_time = std::time::Duration::ZERO;
     for p in parts {
-        let path = match cli.input.as_deref() {
-            Some(custom) => custom.to_string(),
-            None => input_path(year, q, p),
+        let result = if let Some(custom_path) = cli.input.as_deref() {
+            solver.solve_from_path(p, custom_path)
+        } else if let Some(embedded) = solver.input(p) {
+            if embedded.trim().is_empty() {
+                eprintln!("[P{p:}]: skipped (input is empty)");
+                None
+            } else {
+                let (answer, elapsed) = solver.solve_timed(p, embedded);
+                println!("[P{p:}]: {answer} in {:?}", elapsed);
+                Some((answer, elapsed))
+            }
+        } else {
+            let path = input_path(year, q, p);
+            solver.solve_from_path(p, &path)
         };
-        if let Some((_, elapsed)) = solver.solve_from_path(p, &path) {
+
+        if let Some((_, elapsed)) = result {
             total_time += elapsed;
         }
     }
@@ -167,6 +178,7 @@ fn resolve_args(
 pub fn available_quests_for(year: u16) -> &'static [u8] {
     match year {
         2024 => ec2024::available_quests(),
+        2026 => ec2026::available_quests(),
         _ => &[],
     }
 }
@@ -174,6 +186,7 @@ pub fn available_quests_for(year: u16) -> &'static [u8] {
 pub fn solver_for(year: u16, quest: u8) -> Option<Box<dyn Solver>> {
     match year {
         2024 => ec2024::solver_for(year, quest),
+        2026 => ec2026::solver_for(year, quest),
         _ => None,
     }
 }
@@ -215,11 +228,17 @@ fn run_all_quests(year: u16) {
         let mut row_total = std::time::Duration::ZERO;
 
         for (idx, &p) in Part::ALL.iter().enumerate() {
-            let path = input_path(year, q, p);
-            if let Ok(bytes) = internal::read_input(&path) {
-                let start = Instant::now();
-                let _ans = solver.solve_from_input(p, &bytes);
-                let elapsed = start.elapsed();
+            let result = if let Some(embedded) = solver.input(p).filter(|s| !s.trim().is_empty()) {
+                Some(solver.solve_timed(p, embedded))
+            } else {
+                let path = input_path(year, q, p);
+                internal::read_input(&path)
+                    .ok()
+                    .filter(|s| !s.trim().is_empty())
+                    .map(|disk_input| solver.solve_timed(p, &disk_input))
+            };
+
+            if let Some((_ans, elapsed)) = result {
                 row_durations[idx] = Some(elapsed);
                 row_total += elapsed;
                 total_parts_solved += 1;

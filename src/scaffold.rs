@@ -33,34 +33,46 @@ pub fn scaffold_quest(year: u16, quest: u8) -> Result<(), String> {
         println!("  Exists:  {quest_file} (skipping overwrite)");
     } else {
         let template = format!(
-            r#"use crate::internal::Solver;
+            r#"use crate::internal::{{Part, Solver}};
+
+const INPUT_P1: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/inputs/ec{year}/{quest_str}/1.txt"));
+const INPUT_P2: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/inputs/ec{year}/{quest_str}/2.txt"));
+const INPUT_P3: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/inputs/ec{year}/{quest_str}/3.txt"));
 
 pub struct {quest_upper};
 
 impl {quest_upper} {{
-    pub fn part1(_input: &[u8]) -> usize {{
+    pub fn part1(_input: &str) -> usize {{
         0
     }}
 
-    pub fn part2(_input: &[u8]) -> usize {{
+    pub fn part2(_input: &str) -> usize {{
         0
     }}
 
-    pub fn part3(_input: &[u8]) -> usize {{
+    pub fn part3(_input: &str) -> usize {{
         0
     }}
 }}
 
 impl Solver for {quest_upper} {{
-    fn part1(&self, input: &[u8]) -> String {{
+    fn input(&self, part: Part) -> Option<&'static str> {{
+        match part {{
+            Part::One => Some(INPUT_P1),
+            Part::Two => Some(INPUT_P2),
+            Part::Three => Some(INPUT_P3),
+        }}
+    }}
+
+    fn part1(&self, input: &str) -> String {{
         Self::part1(input).to_string()
     }}
 
-    fn part2(&self, input: &[u8]) -> String {{
+    fn part2(&self, input: &str) -> String {{
         Self::part2(input).to_string()
     }}
 
-    fn part3(&self, input: &[u8]) -> String {{
+    fn part3(&self, input: &str) -> String {{
         Self::part3(input).to_string()
     }}
 }}
@@ -73,7 +85,19 @@ mod tests {{
     #[rstest]
     #[case(0, "")]
     fn test_part1(#[case] expected: usize, #[case] input: &str) {{
-        assert_eq!({quest_upper}::part1(input.as_bytes()), expected);
+        assert_eq!({quest_upper}::part1(input), expected);
+    }}
+
+    #[rstest]
+    #[case(0, "")]
+    fn test_part2(#[case] expected: usize, #[case] input: &str) {{
+        assert_eq!({quest_upper}::part2(input), expected);
+    }}
+
+    #[rstest]
+    #[case(0, "")]
+    fn test_part3(#[case] expected: usize, #[case] input: &str) {{
+        assert_eq!({quest_upper}::part3(input), expected);
     }}
 }}
 "#

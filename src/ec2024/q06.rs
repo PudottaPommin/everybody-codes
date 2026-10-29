@@ -1,4 +1,8 @@
-use crate::internal::{Solver, lines};
+use crate::internal::{Part, Solver, lines};
+
+const INPUT_P1: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/inputs/ec2024/q06/1.txt"));
+const INPUT_P2: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/inputs/ec2024/q06/2.txt"));
+const INPUT_P3: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/inputs/ec2024/q06/3.txt"));
 use std::collections::HashMap;
 
 pub struct Q06;
@@ -70,14 +74,21 @@ impl Q06 {
 }
 
 impl Solver for Q06 {
-    fn part1(&self, input: &[u8]) -> String {
-        Self::best(input, &[], false)
+    fn input(&self, part: Part) -> Option<&'static str> {
+        match part {
+            Part::One => Some(INPUT_P1),
+            Part::Two => Some(INPUT_P2),
+            Part::Three => Some(INPUT_P3),
+        }
     }
-    fn part2(&self, input: &[u8]) -> String {
-        Self::best(input, &[], true)
+    fn part1(&self, input: &str) -> String {
+        Self::best(input.as_bytes(), &[], false)
     }
-    fn part3(&self, input: &[u8]) -> String {
-        Self::best(input, &Self::PESTS, true)
+    fn part2(&self, input: &str) -> String {
+        Self::best(input.as_bytes(), &[], true)
+    }
+    fn part3(&self, input: &str) -> String {
+        Self::best(input.as_bytes(), &Self::PESTS, true)
     }
 }
 
@@ -100,7 +111,7 @@ G:@
 H:@"
     )]
     fn test_part1(#[case] expected: &str, #[case] input: &str) {
-        assert_eq!(Q06.part1(input.as_bytes()), expected);
+        assert_eq!(Q06.part1(input), expected);
     }
 
     #[rstest]
@@ -117,6 +128,6 @@ G:@
 H:@"
     )]
     fn test_part2(#[case] expected: &str, #[case] input: &str) {
-        assert_eq!(Q06.part2(input.as_bytes()), expected);
+        assert_eq!(Q06.part2(input), expected);
     }
 }

@@ -1,4 +1,8 @@
-use crate::internal::{Solver, lines, parse_numbers, transpose};
+use crate::internal::{Part, Solver, lines, parse_numbers, transpose};
+
+const INPUT_P1: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/inputs/ec2024/q05/1.txt"));
+const INPUT_P2: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/inputs/ec2024/q05/2.txt"));
+const INPUT_P3: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/inputs/ec2024/q05/3.txt"));
 use rustc_hash::{FxHashMap, FxHashSet};
 use std::collections::VecDeque;
 use std::hash::{DefaultHasher, Hash, Hasher};
@@ -90,16 +94,23 @@ impl Q05 {
 }
 
 impl Solver for Q05 {
-    fn part1(&self, input: &[u8]) -> String {
-        Self::part1(input).to_string()
+    fn input(&self, part: Part) -> Option<&'static str> {
+        match part {
+            Part::One => Some(INPUT_P1),
+            Part::Two => Some(INPUT_P2),
+            Part::Three => Some(INPUT_P3),
+        }
+    }
+    fn part1(&self, input: &str) -> String {
+        Self::part1(input.as_bytes()).to_string()
     }
 
-    fn part2(&self, input: &[u8]) -> String {
-        Self::part2(input).to_string()
+    fn part2(&self, input: &str) -> String {
+        Self::part2(input.as_bytes()).to_string()
     }
 
-    fn part3(&self, input: &[u8]) -> String {
-        Self::part3(input).to_string()
+    fn part3(&self, input: &str) -> String {
+        Self::part3(input.as_bytes()).to_string()
     }
 }
 
